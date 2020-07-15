@@ -100,15 +100,15 @@ class _Radarplotter:
         alpha=None,
         figsize=None,
         ax=None,
-        label=None,
         title=None,
         frame=None,
         grid=None,
+        labels=None,
     ):
-        assert isinstance(normalize, bool)
 
         self.plot_data = self._get_data(data, facets, normalize)
         self.facets = facets
+        self.labels = labels if labels else facets
         self.n = len(facets)
         self.color = color
         self.alpha = alpha
@@ -121,19 +121,18 @@ class _Radarplotter:
             if ax
             else plt.subplots(figsize=figsize, subplot_kw=dict(projection="radar"))[1]
         )
-        angles = np.linspace(0, 2 * np.pi, self.n, endpoint=False)
-        self.angles = angles + angles[:1]
+
 
     def _get_data(self, data, facets, normalize):
         if normalize:
             return data[facets] / data[facets].max(axis=1)[0]
         return data[facets]
 
+
     def _plot(self):
-        theta = radar_factory(self.n, frame=self.frame)
-        self.ax.plot(theta, self.plot_data.values[0], color=self.color)
+        self.ax.plot(self.theta, self.plot_data.values[0], color=self.color)
         self.ax.fill(
-            theta, self.plot_data.values[0], facecolor=self.color, alpha=self.alpha
+            self.theta, self.plot_data.values[0], facecolor=self.color, alpha=self.alpha
         )
 
         self.ax.set_title(
@@ -144,7 +143,7 @@ class _Radarplotter:
             horizontalalignment="center",
             verticalalignment="center",
         )
-        self.ax.set_varlabels(self.facets)
+        self.ax.set_varlabels(self.labels)
 
         if self.grid:
             self.ax.set_rgrids(np.linspace(0, self.plot_data.max().max(), self.n))
@@ -163,6 +162,7 @@ def plot(
     title=None,
     frame="polygon",
     grid=True,
+    labels=None
 ):
 
     plotter = _Radarplotter(
@@ -176,6 +176,7 @@ def plot(
         frame=frame,
         title=title,
         grid=grid,
+        labels=labels
     )
 
     return plotter._plot()
