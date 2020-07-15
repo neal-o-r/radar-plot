@@ -94,8 +94,7 @@ class _Radarplotter:
     def __init__(
         self,
         data=None,
-        facets=None,
-        normalize=True,
+        labels=None,
         color=None,
         alpha=None,
         figsize=None,
@@ -103,13 +102,11 @@ class _Radarplotter:
         title=None,
         frame=None,
         grid=None,
-        labels=None,
     ):
 
-        self.plot_data = self._get_data(data, facets, normalize)
-        self.facets = facets
-        self.labels = labels if labels else facets
-        self.n = len(facets)
+        self.plot_data = data
+        self.labels = labels
+        self.n = len(labels)
         self.color = color
         self.alpha = alpha
         self.title = title
@@ -121,12 +118,6 @@ class _Radarplotter:
             if ax
             else plt.subplots(figsize=figsize, subplot_kw=dict(projection="radar"))[1]
         )
-
-
-    def _get_data(self, data, facets, normalize):
-        if normalize:
-            return data[facets] / data[facets].max(axis=1)[0]
-        return data[facets]
 
 
     def _plot(self):
@@ -153,8 +144,7 @@ class _Radarplotter:
 
 def plot(
     data=None,
-    facets=None,
-    normalize=True,
+    labels=None,
     color="red",
     alpha=0.5,
     figsize=None,
@@ -162,13 +152,11 @@ def plot(
     title=None,
     frame="polygon",
     grid=True,
-    labels=None
 ):
 
     plotter = _Radarplotter(
         data=data,
-        facets=facets,
-        normalize=normalize,
+        labels=labels,
         color=color,
         alpha=alpha,
         figsize=figsize,
@@ -176,7 +164,6 @@ def plot(
         frame=frame,
         title=title,
         grid=grid,
-        labels=labels
     )
 
     return plotter._plot()
