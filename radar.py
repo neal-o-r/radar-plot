@@ -105,8 +105,8 @@ class _Radarplotter:
     ):
 
         self.plot_data = data
-        self.labels = labels
-        self.n = len(labels)
+        self.labels = labels if labels else data.columns
+        self.n = len(self.labels)
         self.color = color
         self.alpha = alpha
         self.title = title
